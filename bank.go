@@ -1,9 +1,44 @@
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+	"os"
+	"strconv"
+)
+
+const accountBalanceFileName = "account_balance.txt"
+
+func writeBalanceToFile(accountBalance float64) {
+	balance := fmt.Sprint(accountBalance)
+	os.WriteFile(accountBalanceFileName, []byte(balance), 0644)
+}
+
+func getBalanceFromFile() (accountBalance float64, error error) {
+	fileContent, error := os.ReadFile(accountBalanceFileName)
+
+	if error != nil {
+		return 1000, errors.New("failed to read balance from file")
+	}
+
+	balanceInString := string(fileContent)
+	accountBalance, error = strconv.ParseFloat(balanceInString, 64)
+
+	if error != nil {
+		return 1000, errors.New("failed to parse balance to float from file")
+	}
+
+	return
+}
 
 func main() {
-	var accountBalance float64 = 1000
+	var accountBalance, error = getBalanceFromFile()
+
+	if error != nil {
+		fmt.Println("ERROR:", error)
+		fmt.Println("----------------------------------------------------------------")
+		panic(error)
+	}
 
 	fmt.Println("Welcome to Go Bank!!!")
 
@@ -42,6 +77,8 @@ func main() {
 
 			accountBalance += depositAmount
 			fmt.Println("Your account balance is: ", accountBalance)
+
+			writeBalanceToFile(accountBalance)
 		case 3:
 			fmt.Println("Withdrawing money...")
 			fmt.Print("How much do you want to withdraw: ")
@@ -59,6 +96,8 @@ func main() {
 			} else {
 				accountBalance -= withdrawalAmount
 				fmt.Println("Your account balance is: ", accountBalance)
+
+				writeBalanceToFile(accountBalance)
 			}
 		default:
 			fmt.Println("Exiting. Thank you for Banking with us :) !!!")

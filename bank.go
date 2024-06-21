@@ -77,11 +77,8 @@ func main() {
 
 			accountBalance += depositAmount
 			fmt.Println("Your account balance is: ", accountBalance)
-<<<<<<< HEAD
-=======
 
 			writeBalanceToFile(accountBalance)
->>>>>>> master
 		case 3:
 			fmt.Println("Withdrawing money...")
 			fmt.Print("How much do you want to withdraw: ")
@@ -99,11 +96,8 @@ func main() {
 			} else {
 				accountBalance -= withdrawalAmount
 				fmt.Println("Your account balance is: ", accountBalance)
-<<<<<<< HEAD
-=======
 
 				writeBalanceToFile(accountBalance)
->>>>>>> master
 			}
 		default:
 			fmt.Println("Exiting. Thank you for Banking with us :) !!!")

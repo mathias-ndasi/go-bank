@@ -1,38 +1,17 @@
 package main
 
 import (
-	"errors"
 	"fmt"
-	"os"
-	"strconv"
+
+	"github.com/Pallinder/go-randomdata"
+
+	fileOperations "example.com/bank/file-operations"
 )
 
 const accountBalanceFileName = "account_balance.txt"
 
-func writeBalanceToFile(accountBalance float64) {
-	balance := fmt.Sprint(accountBalance)
-	os.WriteFile(accountBalanceFileName, []byte(balance), 0644)
-}
-
-func getBalanceFromFile() (accountBalance float64, error error) {
-	fileContent, error := os.ReadFile(accountBalanceFileName)
-
-	if error != nil {
-		return 1000, errors.New("failed to read balance from file")
-	}
-
-	balanceInString := string(fileContent)
-	accountBalance, error = strconv.ParseFloat(balanceInString, 64)
-
-	if error != nil {
-		return 1000, errors.New("failed to parse balance to float from file")
-	}
-
-	return
-}
-
 func main() {
-	var accountBalance, error = getBalanceFromFile()
+	var accountBalance, error = fileOperations.GetFloatFromFile(accountBalanceFileName)
 
 	if error != nil {
 		fmt.Println("ERROR:", error)
@@ -41,14 +20,10 @@ func main() {
 	}
 
 	fmt.Println("Welcome to Go Bank!!!")
+	fmt.Println("Reach us 24/7", randomdata.PhoneNumber())
 
 	for {
-		fmt.Println("What do you want to do?")
-		fmt.Println("1. Check Balance")
-		fmt.Println("2. Deposit Money")
-		fmt.Println("3. Withdraw Money")
-		fmt.Println("4. Exit")
-
+		presentOptions()
 		var choice int
 
 		fmt.Print("Your choice: ")
@@ -78,7 +53,7 @@ func main() {
 			accountBalance += depositAmount
 			fmt.Println("Your account balance is: ", accountBalance)
 
-			writeBalanceToFile(accountBalance)
+			fileOperations.WriteFloatToFile(accountBalance, accountBalanceFileName)
 		case 3:
 			fmt.Println("Withdrawing money...")
 			fmt.Print("How much do you want to withdraw: ")
@@ -97,7 +72,7 @@ func main() {
 				accountBalance -= withdrawalAmount
 				fmt.Println("Your account balance is: ", accountBalance)
 
-				writeBalanceToFile(accountBalance)
+				fileOperations.WriteFloatToFile(accountBalance, accountBalanceFileName)
 			}
 		default:
 			fmt.Println("Exiting. Thank you for Banking with us :) !!!")
